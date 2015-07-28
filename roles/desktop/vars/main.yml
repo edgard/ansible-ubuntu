@@ -1,0 +1,79 @@
+---
+# file: roles/desktop/vars/main.yml
+
+packages_remove:
+  - aisleriot
+  - apport
+  - gnome-mahjongg
+  - gnome-mines
+  - gnome-sudoku
+  - xf86-input-synaptics
+
+packages_base:
+  - linux-headers-lowlatency
+  - linux-lowlatency
+  - linux-tools-lowlatency
+  - tlp
+
+packages_misc:
+  - android-tools-adb
+  - android-tools-fastboot
+  - aria2
+  - asciinema
+  - ddclient
+  - dialog
+  - powertop
+  - sshfs
+  - sshpass
+  - wrk
+  # - neofetch
+
+packages_devel:
+  - ansible
+  - cmake
+  - exuberant-ctags
+  - git-flow
+  - openjdk-8-jdk
+  - pylint
+  - python-autopep8
+  - python-dev
+  - python-jedi
+  - python-pip
+  - python-virtualenv
+  - shellcheck
+  - vagrant
+  # - ansible-lint
+  # - golang
+  # - kubectl-bin
+  # - minikube
+
+packages_xdeps:
+  - arc-theme
+  - papirus-icon-theme
+  - tumbler-plugins-extra
+  - ubuntu-restricted-extras
+  - xserver-xorg-input-libinput
+
+packages_xapps:
+  - calibre
+  - chromium-browser
+  - darktable
+  - gimp
+  - gtk-recordmydesktop
+  - handbrake
+  - inkscape
+  - menulibre
+  - nautilus-dropbox
+  - pitivi
+  - redshift-gtk
+  - skypeforlinux
+  - spotify-client
+  - telegram
+  - transmission-gtk
+  - vinagre
+  - virtualbox
+  # - visual-studio-code
+
+services_mask:
+  - systemd-rfkill.service
+  - systemd-rfkill.socket

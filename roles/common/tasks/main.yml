@@ -1,0 +1,22 @@
+---
+# file: roles/common/tasks/main.yml
+
+- name: install_repositories_additional_keys
+  apt_key: url='{{ item }}' state=present
+  with_items:
+    - https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xF76221572C52609D    # docker
+
+- name: install_repositories_additional
+  apt_repository: repo='{{ item }}' state=present update_cache=yes mode=644
+  with_items:
+    - deb https://apt.dockerproject.org/repo ubuntu-{{ ansible_distribution_release }} main
+
+- name: install_packages
+  apt: name={{ item }} state=present
+  with_flattened:
+    - '{{ packages_base }}'
+    - '{{ packages_misc }}'
+    - '{{ packages_devel }}'
+
+- name: optimize_disk_io_schedulers
+  copy: src=60-io_schedulers.rules dest=/etc/udev/rules.d/60-io_schedulers.rules owner=root group=root mode=0644

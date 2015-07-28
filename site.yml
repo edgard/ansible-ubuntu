@@ -1,0 +1,8 @@
+---
+# file: site.yml
+
+- hosts: all
+  become: true
+  roles:
+    - { role: common, tags: common }
+    - { role: desktop, tags: desktop }

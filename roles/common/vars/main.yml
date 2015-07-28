@@ -1,0 +1,32 @@
+---
+# file: roles/common/vars/main.yml
+
+packages_base:
+  - amd64-microcode
+  - docker-engine
+  - haveged
+  - intel-microcode
+  - lm-sensors
+  - openssh-server
+  - smartmontools
+
+packages_misc:
+  - git
+  - htop
+  - iotop
+  - p7zip
+  - rar
+  - screen
+  - traceroute
+  - unrar
+  - unzip
+  - zip
+  - zsh
+
+packages_devel:
+  - autoconf
+  - automake
+  - bison
+  - build-essential
+  - flex
+  - libtool
