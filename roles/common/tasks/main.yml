@@ -1,22 +1,31 @@
 ---
 # file: roles/common/tasks/main.yml
 
+- name: preinstall_packages
+  apt:
+    name: "{{ query('flattened', ['{{ packages_preinstall }}']) }}"
+
 - name: install_repositories_additional_keys
-  apt_key: url='{{ item }}' state=present
+  apt_key:
+    keyserver: keyserver.ubuntu.com
+    id: '{{ item }}'
   with_items:
-    - https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xF76221572C52609D    # docker
+    - 8D81803C0EBFCD88    # docker
 
 - name: install_repositories_additional
-  apt_repository: repo='{{ item }}' state=present update_cache=yes mode=644
+  apt_repository:
+    repo: '{{ item }}'
   with_items:
-    - deb https://apt.dockerproject.org/repo ubuntu-{{ ansible_distribution_release }} main
+    - deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable
 
 - name: install_packages
-  apt: name={{ item }} state=present
-  with_flattened:
-    - '{{ packages_base }}'
-    - '{{ packages_misc }}'
-    - '{{ packages_devel }}'
+  apt:
+    name: "{{ query('flattened', ['{{ packages_base }}', '{{ packages_misc }}', '{{ packages_devel }}', '{{ packages_docker }}']) }}"
 
 - name: optimize_disk_io_schedulers
-  copy: src=60-io_schedulers.rules dest=/etc/udev/rules.d/60-io_schedulers.rules owner=root group=root mode=0644
+  copy:
+    src: 60-io_schedulers.rules
+    dest: /etc/udev/rules.d/60-io_schedulers.rules
+    owner: root
+    group: root
+    mode: 0644

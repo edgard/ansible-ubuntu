@@ -1,9 +1,14 @@
 ---
 # file: roles/common/vars/main.yml
 
+packages_preinstall:
+  - apt-transport-https
+  - curl
+  - gnupg-agent
+  - software-properties-common
+
 packages_base:
   - amd64-microcode
-  - docker-engine
   - haveged
   - intel-microcode
   - lm-sensors
@@ -14,12 +19,15 @@ packages_misc:
   - git
   - htop
   - iotop
+  - mercurial
   - p7zip
   - rar
   - screen
   - traceroute
   - unrar
   - unzip
+  - vim
+  - wget
   - zip
   - zsh
 
@@ -30,3 +38,9 @@ packages_devel:
   - build-essential
   - flex
   - libtool
+  - linux-headers-{{ ansible_kernel }}
+
+packages_docker:
+  - docker-ce
+  - docker-ce-cli
+  - containerd.io

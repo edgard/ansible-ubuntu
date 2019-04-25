@@ -1,16 +1,16 @@
 # ansible-ubuntu
 
-This is a personal installation playbook to install Ubuntu GNOME to my liking.
+This is a personal installation playbook to install Ubuntu GNOME development environment to my liking.
 
 I do not recommend using it as-is, fork and make your changes before using it. You've been warned!
 
-Tested on Xenial with Ansible 2.2.1.
+Tested on Bionic with Ansible 2.7.10.
 
 ## Dependencies
 
 If you are running locally onto a fresh install, there are a few dependencies:
 
-    $ sudo apt-get install openssh-server sshpass ansible python-pycurl
+    $ sudo apt install openssh-server sshpass ansible python-pycurl apt-transport-https ca-certificates curl gnupg-agent software-properties-common
     $ sudo systemctl start sshd
 
 ## Tags

@@ -2,78 +2,50 @@
 # file: roles/desktop/vars/main.yml
 
 packages_remove:
-  - aisleriot
   - apport
-  - gnome-mahjongg
-  - gnome-mines
-  - gnome-sudoku
-  - xf86-input-synaptics
+  - gnome-software-plugin-snap
+  - snapd
 
 packages_base:
-  - linux-headers-lowlatency
-  - linux-lowlatency
-  - linux-tools-lowlatency
   - tlp
 
 packages_misc:
-  - android-tools-adb
-  - android-tools-fastboot
-  - aria2
-  - asciinema
-  - ddclient
-  - dialog
-  - powertop
+  - fasd
+  - hstr
   - sshfs
-  - sshpass
-  - wrk
-  # - neofetch
 
 packages_devel:
   - ansible
-  - cmake
-  - exuberant-ctags
-  - git-flow
-  - openjdk-8-jdk
-  - pylint
-  - python-autopep8
-  - python-dev
-  - python-jedi
-  - python-pip
-  - python-virtualenv
+  - ansible-lint
   - shellcheck
-  - vagrant
-  # - ansible-lint
-  # - golang
-  # - kubectl-bin
-  # - minikube
+
+packages_devel_libs:
+  - dkms
+  - libbz2-dev
+  - libffi-dev
+  - liblzma-dev
+  - libncurses5-dev
+  - libreadline-dev
+  - libsqlite3-dev
+  - libssl-dev
+  - libxml2-dev
+  - libxmlsec1-dev
+  - llvm
+  - python-dev
+  - python-pip
+  - python3-dev
+  - python3-pip
+  - tk-dev
+  - zlib1g-dev
 
 packages_xdeps:
   - arc-theme
+  - gnome-shell-extensions
+  - gnome-tweak-tool
   - papirus-icon-theme
-  - tumbler-plugins-extra
+  - ttf-mscorefonts-installer
   - ubuntu-restricted-extras
-  - xserver-xorg-input-libinput
 
 packages_xapps:
-  - calibre
-  - chromium-browser
-  - darktable
-  - gimp
-  - gtk-recordmydesktop
-  - handbrake
-  - inkscape
-  - menulibre
-  - nautilus-dropbox
-  - pitivi
-  - redshift-gtk
-  - skypeforlinux
-  - spotify-client
-  - telegram
-  - transmission-gtk
-  - vinagre
-  - virtualbox
-  # - visual-studio-code
-
-services_mask:
-  - systemd-rfkill.service
-  - systemd-rfkill.socket
+  - code
+  - google-chrome-stable

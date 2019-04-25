@@ -2,85 +2,92 @@
 # file: roles/desktop/tasks/main.yml
 
 - name: install_repositories_additional_keys
-  apt_key: url='{{ item }}' state=present
+  apt_key:
+    keyserver: keyserver.ubuntu.com
+    id: '{{ item }}'
   with_items:
-    - https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x13B00F1FD2C19886         # spotify
-    - https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x5A7D1D38BEB6D886         # arc-theme
-    - https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x1F3045A5DF7587C3         # skype
+    - 7721F63BD38B4796      # chrome
+    - EB3E94ADBE1229CF      # vscode
 
 - name: install_repositories_additional
-  apt_repository: repo='{{ item }}' state=present update_cache=yes mode=644
+  apt_repository:
+    repo: '{{ item }}'
   with_items:
-    - deb http://download.opensuse.org/repositories/home:/Horst3180/xUbuntu_{{ ansible_distribution_version }}/ /
-    - deb http://repository.spotify.com testing non-free
-    - deb [arch=amd64] https://repo.skype.com/deb stable main
-    - ppa:atareao/telegram
+    - deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main
+    - ppa:ansible/ansible
     - ppa:linrunner/tlp
     - ppa:papirus/papirus
+    - ppa:ultradvorka/ppa
 
-- name: install_repositories_additional_updates
-  apt_repository: repo='{{ item }}' state=present update_cache=yes mode=644
-  with_items:
-    - ppa:ansible/ansible
-    - ppa:graphics-drivers/ppa
+- name: install_repositories_additional_vscode
+  apt_repository:
+    repo: deb [arch=amd64] http://packages.microsoft.com/repos/vscode stable main
+    filename: vscode
+
+- name: disable_repository_creation_chrome
+  copy:
+    content: ""
+    dest: /etc/default/google-chrome
+    owner: root
+    group: root
+    mode: 0644
 
 - name: accept_mscorefonts_license
-  debconf: name='ttf-mscorefonts-installer' question='msttcorefonts/accepted-mscorefonts-eula' value='true' vtype='select'
+  debconf:
+    name: ttf-mscorefonts-installer
+    question: msttcorefonts/accepted-mscorefonts-eula
+    value: 'true'
+    vtype: select
 
 - name: remove_packages
-  apt: name={{ item }} state=absent purge=yes
-  with_flattened:
-    - '{{ packages_remove }}'
+  apt:
+    name: "{{ query('flattened', ['{{ packages_remove }}']) }}"
+    state: absent
+    purge: yes
 
 - name: install_packages
-  apt: name={{ item }} state=present
-  with_flattened:
-    - '{{ packages_base }}'
-    - '{{ packages_misc }}'
-    - '{{ packages_devel }}'
-    - '{{ packages_xdeps }}'
-    - '{{ packages_xapps }}'
-
-- name: mask_services
-  service: name='{{ item }}' masked=yes
-  with_flattened:
-    - '{{ services_mask }}'
+  apt:
+    name: "{{ query('flattened', ['{{ packages_base }}', '{{ packages_misc }}', '{{ packages_devel }}', '{{ packages_devel_libs }}', '{{ packages_xdeps }}', '{{ packages_xapps }}']) }}"
 
 - name: add_user_to_docker_group
-  user: name={{ lookup('env','USER') }} groups=docker append=yes state=present
+  user:
+    name: "{{ lookup('env','USER') }}"
+    groups: docker
+    append: yes
+    state: present
 
 - name: install_config_systemd_journalsize
-  lineinfile: dest=/etc/systemd/journald.conf regexp='^#?SystemMaxUse=' line='SystemMaxUse=50M'
+  lineinfile:
+    dest: /etc/systemd/journald.conf
+    regexp: '^#?SystemMaxUse='
+    line: 'SystemMaxUse=50M'
 
 - name: install_config_gdm_disable_wayland
-  lineinfile: dest=/etc/gdm3/custom.conf regexp='^#?WaylandEnable=' line='WaylandEnable=false'
-
-- name: install_config_gtk_qt4_override
-  lineinfile: dest=/etc/xdg/Trolltech.conf regexp='^style=' line='style=GTK+'
-
-- name: install_config_gtk_qt5_override
-  lineinfile: dest=/etc/environment regexp='^QT_QPA_PLATFORMTHEME=' line='QT_QPA_PLATFORMTHEME=gtk2'
-
-- name: install_config_font_antialias
-  file: path=/etc/fonts/conf.d/10-antialias.conf src=../conf.avail/10-antialias.conf state=link
-
-- name: install_config_font_hinting
-  file: path=/etc/fonts/conf.d/10-hinting.conf src=../conf.avail/10-hinting.conf state=link
-
-- name: install_config_font_subpixel_rgb
-  file: path=/etc/fonts/conf.d/10-sub-pixel-rgb.conf src=../conf.avail/10-sub-pixel-rgb.conf state=link
-
-- name: install_config_font_lcdfilter_default
-  file: path=/etc/fonts/conf.d/11-lcdfilter-default.conf src=../conf.avail/11-lcdfilter-default.conf state=link
-
-- name: install_config_font_no_bitmaps
-  file: path=/etc/fonts/conf.d/70-no-bitmaps.conf src=../conf.avail/70-no-bitmaps.conf state=link
+  lineinfile:
+    dest: /etc/gdm3/custom.conf
+    regexp: '^#?WaylandEnable='
+    line: 'WaylandEnable=false'
 
 - name: create_xorg_config_dir
-  file: path=/etc/X11/xorg.conf.d state=directory owner=root group=root mode=0755
+  file:
+    path: /etc/X11/xorg.conf.d
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
 
 - name: install_config_xorg_tweaks_mouse
-  copy: src=20-mouse-tweaks.conf dest=/etc/X11/xorg.conf.d/20-mouse-tweaks.conf owner=root group=root mode=0644
+  copy:
+    src: 20-mouse-tweaks.conf
+    dest: /etc/X11/xorg.conf.d/20-mouse-tweaks.conf
+    owner: root
+    group: root
+    mode: 0644
 
 - name: install_config_xorg_tweaks_touchpad
-  copy: src=20-touchpad-tweaks.conf dest=/etc/X11/xorg.conf.d/20-touchpad-tweaks.conf owner=root group=root mode=0644
+  copy:
+    src: 20-touchpad-tweaks.conf
+    dest: /etc/X11/xorg.conf.d/20-touchpad-tweaks.conf
+    owner: root
+    group: root
+    mode: 0644
